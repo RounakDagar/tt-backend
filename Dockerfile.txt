@@ -1,23 +1,23 @@
-# Use Java 21 base image
-FROM eclipse-temurin:21-jdk
+# Use Java base image
+FROM openjdk:21-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy everything at once (including mvnw and src)
-COPY . .
-
-# Make mvnw executable after final copy
+# Copy wrapper files and make mvnw executable
+COPY mvnw .
+COPY .mvn .mvn
 RUN chmod +x mvnw
 
-# Download dependencies
+# Copy pom.xml and download dependencies
+COPY pom.xml .
 RUN ./mvnw dependency:go-offline
 
-# Build the Spring Boot app
+# Copy the rest of the backend source
+COPY . .
+
+# Build the Spring Boot JAR
 RUN ./mvnw clean package -DskipTests
 
-# Expose port for Railway
-EXPOSE 8080
-
-# Run the app
+# Run the application
 CMD ["java", "-jar", "target/Time-Table-Management-0.0.1-SNAPSHOT.jar"]
