@@ -4,19 +4,22 @@ FROM eclipse-temurin:21-jdk
 # Set working directory
 WORKDIR /app
 
-# Copy Maven wrapper and dependencies config
-COPY mvnw .
-COPY .mvn .mvn
-COPY pom.xml .
+# Copy Maven wrapper and build config
+COPY mvnw ./
+COPY .mvn/ .mvn/
+COPY pom.xml ./
 
-# Make mvnw executable and go offline
+# Make mvnw executable and download dependencies
 RUN chmod +x mvnw && ./mvnw dependency:go-offline
 
-# Copy the rest of the source code
+# Copy the rest of the project files
 COPY . .
 
-# Package the app
+# Build the Spring Boot app
 RUN ./mvnw clean package -DskipTests
 
-# Run the app
+# Expose port (for Railway's port detection)
+EXPOSE 8080
+
+# Run the JAR (make sure name matches actual build output)
 CMD ["java", "-jar", "target/Time-Table-Management-0.0.1-SNAPSHOT.jar"]
