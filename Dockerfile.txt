@@ -1,0 +1,22 @@
+# Use Java 21 base image
+FROM eclipse-temurin:21-jdk
+
+# Set working directory
+WORKDIR /app
+
+# Copy Maven wrapper and dependencies config
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+
+# Make mvnw executable and go offline
+RUN chmod +x mvnw && ./mvnw dependency:go-offline
+
+# Copy the rest of the source code
+COPY . .
+
+# Package the app
+RUN ./mvnw clean package -DskipTests
+
+# Run the app
+CMD ["java", "-jar", "target/Time-Table-Management-0.0.1-SNAPSHOT.jar"]
