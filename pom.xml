@@ -113,12 +113,24 @@
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+  <plugins>
+    <!-- Spring Boot Plugin (already present) -->
+    <plugin>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-maven-plugin</artifactId>
+    </plugin>
+
+    <!-- Add this plugin to fix the Java 21 error -->
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.11.0</version> <!-- This version supports Java 21 -->
+      <configuration>
+        <release>21</release> <!-- Ensures compatibility with Java 21 -->
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+
 
 </project>
